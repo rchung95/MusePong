@@ -19,6 +19,8 @@ EPSILON = 2
 BLACK     = (0  ,0  ,0  )
 WHITE     = (255,255,255)
 
+
+
 #Draws the arena the game will be played in. 
 def drawArena():
     DISPLAYSURF.fill((0,0,0))
@@ -78,13 +80,13 @@ def checkPointScored(paddle1, ball, score, ballDirX):
     #2 point for hitting the ball
     if ballDirX == -1 and (paddle1.right >= ball.right or paddle1.right >= ball.right-EPSILON/2) and paddle1.top < ball.top and paddle1.bottom > ball.bottom:
         print("Score +2!")
-        score += 2
+        score += 5
         return score
 
     # -5 pts if wall is hit
     elif ballDirX == -1 and (paddle1.right >= ball.right or paddle1.right >= ball.right-EPSILON/2):
         print("Score -5!")
-        score -= 1
+        score -= 0.2
         return score
     # #5 points for beating the other paddle
     # elif ball.right == WINDOWWIDTH - LINETHICKNESS:
