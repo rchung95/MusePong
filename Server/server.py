@@ -1,6 +1,5 @@
 import sys
-import collections
-import socket
+#lsimport collections
 
 CALIB_TIME = 200 #number of samples
 XCOORD = 3 # index of x coord
@@ -20,9 +19,9 @@ class UserData:
 		d.appendleft(data)
 		dataAvg = sum(d)/len(d)
 		if dataAvg>self.bias:
-			return (dataAvg-self.bias)/right_scale
+			return (dataAvg-self.bias)/self.right_scale
 		else:
-			return (self.bias-dataAvg)/left_scale
+			return (self.bias-dataAvg)/self.left_scale
 
 def getBias():
 	data_std = []
@@ -50,57 +49,19 @@ def getRange():
 		if (len(data_calc) > CALIB_TIME):
 			break;
 	return data_calc
+
+def sendData():
+	for line in sys.stdin:
+		data_tmp = line.split()
+		if(len(data_tmp >=5 and data_tmp[1] == '/muse/acc')):
+			to_send = usr.mapMove(data_tmp[XCOORD])
+			print(str(to_send)
+
 	
-###################################### Game Begin###################
-
-########################### Prompt the user to calibrate: stand ##################
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# Bind the socket to the port
-server_address = ('localhost', 5002)
-print >>sys.stderr, 'starting up on %s port %s' % server_address
-sock.bind(server_address)
-
-# Listen for incoming connections
-sock.listen(1)
-
-while True:
-    # Wait for a connection
-    print >>sys.stderr, 'waiting for a connection'
-    connection, client_address = sock.accept()
-
-    try:
-        print >>sys.stderr, 'connection from', client_address
-        data_cal = []
-        data_stand = []	
-        bias = 0
-        # Receive the data in small chunks and retransmit it
-        while True:
-            data = connection.recv(16)
-
-            if (int(data) == 1): #calibrate to bias
-            	bias = getBias()  
-            
-            if (int(data) == 2): 
-            	data_cal = getDataSet()
-
-            if (int(data) == 3):
-            	usr = User(data_calc, bias)
-            	for line in sys.stdin:
-					if(place<10):
-						continue
-					data_tmp = line.split()
-					if(len(data_tmp >=5 and data_tmp[1] == '/muse/acc')):
-						to_send = usr.mapMove(data_tmp[XCOORD])
-						connection.sendall(to_send)
 
 
-    finally:
-        # Clean up the connection
-        connection.close()
-
-
-
-
+inp = input()
+if int(inp)==1:
+	print("input 1")
+	getBias()
 
