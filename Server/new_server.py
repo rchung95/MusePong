@@ -21,7 +21,7 @@ def get_buffer(size):
 			break
 		if len(line.split()) > 2 and line.split()[1] == '/muse/acc':
 			#print line.split()
-			input_holder.append(float(line.split()[3]))
+			input_holder.append(float(line.split()[5]))
 
 	fi.close()
 	return input_holder
@@ -43,16 +43,16 @@ while True:
 
 	for line in fi:
 		if len(line.split()) > 2 and line.split()[1] == '/muse/acc':
-			#print line.split()
-			previous_location.append(float(line.split()[3]))
+			print line.split()
+			previous_location.append(float(line.split()[5]))
 			previous_location.pop(0)
-			current_location.append(float(line.split()[3]))
+			current_location.append(float(line.split()[5]))
 			current_location.pop(0)
 		
-		if (sum(current_location)/5 - sum(previous_location)/200 > 100):
+		if (sum(current_location)/5 - sum(previous_location)/200 > 80):
 			print(1)
 
-		elif (sum(current_location)/5 - sum(previous_location)/200 < -30):
+		elif (sum(current_location)/5 - sum(previous_location)/200 < -100):
 			print(-1)
 
 		else:
