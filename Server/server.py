@@ -1,26 +1,28 @@
-import socket
-
-class TCPConnection:
-    def __init__(self, sock=None):
-        if sock is None:
-            self.sock = socket.socket(
-                            socket.AF_INET, socket.SOCK_STREAM)
-        else:
-            self.sock = sock
-
-    def connect(self, host, port):
-        try:
-            self.sock.connect((host, port))
-            print('Successful Connection')
-        except:
-            print('Connection Failed')
-
-    def readlines(self):
-        data = self.sock.recv(1024)
-        print(data)
+import sys
 
 
 
-listen = TCPConnection()
-listen.connect('localhost',7000)
-listen.readlines()
+	########################### Prompt the user to calibrate: stand ##################
+data_stand = []
+data_tmp = []
+count= 2
+for place, line in enumerate(sys.stdin):
+	if(place<10):
+		continue
+	
+	data_tmp = line.split()
+	#print(data_tmp)
+	
+	
+	if(len(data_tmp)>=6 and data_tmp[1] == '/muse/acc'):
+		data_stand.append(data_tmp[3])
+
+	#data_tmp = input from Muse
+print data_stand
+
+print str(len(data_stand))
+
+	##################### Prompt the user to calibrate: move head right/left ##################
+	#User user = new User(data_cal, bias);
+
+	##################### Start the game  ##################
