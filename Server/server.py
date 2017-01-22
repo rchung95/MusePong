@@ -1,28 +1,106 @@
 import sys
+import collections
+import socket
+
+CALIB_TIME = 200 #number of samples
+XCOORD = 3 # index of x coord
+
+class UserData:
+	def __init__(self, dataSet, bias):
+		self.bias = bias
+		self.right_scale = max(dataSet) - bias
+		self.left_scale = bias - min(dataSet)
+		self.buffer = collections.deque(maxlen=25)
+		print ("new user with bias "+str(self.bias) +" in range "+str(self.scale)+" created!")
+
+	#right most = 1, left most = -1; return a number in between
+	def mapMove(self, data):
+		"""input: the X-coord read from real time"""
+		d.pop()
+		d.appendleft(data)
+		dataAvg = sum(d)/len(d)
+		return dataAvg>bias?(dataAvg-bias)/right_scale : (bias-dataAvg)/left_scale
 
 
-
-	########################### Prompt the user to calibrate: stand ##################
-data_stand = []
-data_tmp = []
-count= 2
-for place, line in enumerate(sys.stdin):
-	if(place<10):
-		continue
+def getBias():
+	data_std = []
+	data_tmp = []
+	for place, line in enumerate(sys.stdin):
+		if(place<10):
+			continue
+		data_tmp = line.split()
+		if(len(data_tmp)>=5 and data_tmp[1] == '/muse/acc'):
+			data_std.append(data_tmp[XCOORD])
+		if (len(data_std) > CALIB_TIME):
+			break;
 	
-	data_tmp = line.split()
-	#print(data_tmp)
+	return sum(data_std)/len(data_std)
+
+def getRange():
+	data_calc = []
+	data_tmp = []
+	for place, line in enumerate(sys.stdin):
+		if(place<10):
+			continue
+		data_tmp = line.split()
+		if(len(data_tmp)>=5 and data_tmp[1] == '/muse/acc'):
+			data_calc.append(data_tmp[XCOORD])
+		if (len(data_calc) > CALIB_TIME):
+			break;
+	return data_calc
 	
-	
-	if(len(data_tmp)>=6 and data_tmp[1] == '/muse/acc'):
-		data_stand.append(data_tmp[3])
+###################################### Game Begin###################
 
-	#data_tmp = input from Muse
-print data_stand
+########################### Prompt the user to calibrate: stand ##################
 
-print str(len(data_stand))
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-	##################### Prompt the user to calibrate: move head right/left ##################
-	#User user = new User(data_cal, bias);
+# Bind the socket to the port
+server_address = ('localhost', 5002)
+print >>sys.stderr, 'starting up on %s port %s' % server_address
+sock.bind(server_address)
 
-	##################### Start the game  ##################
+# Listen for incoming connections
+sock.listen(1)
+
+while True:
+    # Wait for a connection
+    print >>sys.stderr, 'waiting for a connection'
+    connection, client_address = sock.accept()
+
+    try:
+        print >>sys.stderr, 'connection from', client_address
+        data_cal = []
+		data_stand = []	
+
+		
+		bias = 0
+        # Receive the data in small chunks and retransmit it
+        while True:
+            data = connection.recv(16)
+
+            if (int(data) == 1): #calibrate to bias
+            	bias = getBias()  
+            
+            if (int(data) == 2): 
+            	data_cal = getDataSet()
+
+            if (int(data) == 3):
+            	User user = new User(data_calc, bias)
+            	for line in sys.stdin:
+					if(place<10):
+						continue
+					data_tmp = line.split()
+					if(len(data_tmp >=5 and data_tmp[1] == '/muse/acc')):
+						to_send = user.mapMove(data_tmp[XCOORD])
+						connection.sendall(to_send)
+
+
+    finally:
+        # Clean up the connection
+        connection.close()
+
+
+
+
+
