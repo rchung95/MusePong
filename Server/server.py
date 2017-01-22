@@ -78,21 +78,26 @@ while True:
         # Receive the data in small chunks and retransmit it
         while True:
             data = connection.recv(16)
-
+            print >>sys.stderr, 'data Receive' % data
             if (int(data) == 1): #calibrate to bias
-            	bias = getBias()  
+            	print >>sys.stderr, 'getBias started!'
+            	bias = getBias() 
+            	print >>sys.stderr, 'getBias done!' 
             
             if (int(data) == 2): 
+            	print >>sys.stderr, 'getDataSet started!'
             	data_cal = getDataSet()
+            	print >>sys.stderr, 'getDataSet done!'
 
             if (int(data) == 3):
+            	print >>sys.stderr, 'Sending muse tilt.'
             	usr = User(data_calc, bias)
             	for line in sys.stdin:
-					if(place<10):
-						continue
+            		print >>sys.stderr, "get line" % line
 					data_tmp = line.split()
 					if(len(data_tmp >=5 and data_tmp[1] == '/muse/acc')):
 						to_send = usr.mapMove(data_tmp[XCOORD])
+						print >>sys.stderr, "send single value" % to_send
 						connection.sendall(to_send)
 
 
