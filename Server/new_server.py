@@ -4,11 +4,11 @@ import time
 
 
 #read input continously
-def read_input():
-	while True:
-		for line in fileinput.input():
-			if len(line.split()) > 2 and line.split()[1] == '/muse/acc':
-				return (line.split())
+# def read_input():
+# 	while True:
+# 		for line in fileinput.input():
+# 			if len(line.split()) > 2 and line.split()[1] == '/muse/acc':
+# 				return (line.split())
 
 
 #get position of head (read size number of data)
@@ -26,40 +26,44 @@ def get_buffer(size):
 	fi.close()
 	return input_holder
 
-#get position of head when tilting left
-print("Application Starting...\nCalibrating...\n")
-previous_location = get_buffer(200)
-current_location = get_buffer(5)
-
-
-print(sum(previous_location) / 200)
-print(sum(current_location) / 5)
-
-
-
 #start game
-while True:
+# while True:
+def read_data_from_muse(previous_location, current_location):
 	fi = fileinput.input()
 
 	for line in fi:
 		if len(line.split()) > 2 and line.split()[1] == '/muse/acc':
-			print line.split()
+			#print line.split()
 			previous_location.append(float(line.split()[5]))
 			previous_location.pop(0)
 			current_location.append(float(line.split()[5]))
 			current_location.pop(0)
 		
 		if (sum(current_location)/5 - sum(previous_location)/200 > 80):
-			print(1)
+			fi.close()
+			return 1
 
 		elif (sum(current_location)/5 - sum(previous_location)/200 < -100):
-			print(-1)
+			fi.close()
+			return -1
 
 		else:
-			print(0)
+			fi.close()
+			return 0
+
+	
+
+def go_get_data():
+	#get position of head when tilting left
+	print("Application Starting...\nCalibrating...\n")
+	previous_location = get_buffer(200)
+	current_location = get_buffer(5)
+	while True:
+		print(read_data_from_muse(previous_location, current_location))
 
 
 
+go_get_data()
 
 
 # def getRange():
