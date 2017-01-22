@@ -214,12 +214,16 @@ def main():
                 sys.exit()
 
            
-        keys_pressed = pygame.key.get_pressed()
-        if keys_pressed[pygame.K_LEFT]:
-            paddle1.x -= 10
-        if keys_pressed[pygame.K_RIGHT]:
-            paddle1.x +=10
+        # keys_pressed = pygame.key.get_pressed()
+        # if keys_pressed[pygame.K_LEFT]:
+        #     paddle1.x -= 10
+        # if keys_pressed[pygame.K_RIGHT]:
+        #     paddle1.x +=10
 
+        if (muse_data==1):
+            paddle1.y -= 2
+        elif (muse_data==-1):
+            paddle1.y += 2
         
         drawArena()
         drawPaddle(paddle1)
