@@ -19,8 +19,10 @@ class UserData:
 		d.pop()
 		d.appendleft(data)
 		dataAvg = sum(d)/len(d)
-		return dataAvg>bias?(dataAvg-bias)/right_scale : (bias-dataAvg)/left_scale
-
+		if dataAvg>self.bias:
+			return (dataAvg-self.bias)/right_scale
+		else:
+			return (self.bias-dataAvg)/left_scale
 
 def getBias():
 	data_std = []
@@ -71,10 +73,8 @@ while True:
     try:
         print >>sys.stderr, 'connection from', client_address
         data_cal = []
-		data_stand = []	
-
-		
-		bias = 0
+        data_stand = []	
+        bias = 0
         # Receive the data in small chunks and retransmit it
         while True:
             data = connection.recv(16)
@@ -86,13 +86,13 @@ while True:
             	data_cal = getDataSet()
 
             if (int(data) == 3):
-            	User user = new User(data_calc, bias)
+            	usr = User(data_calc, bias)
             	for line in sys.stdin:
 					if(place<10):
 						continue
 					data_tmp = line.split()
 					if(len(data_tmp >=5 and data_tmp[1] == '/muse/acc')):
-						to_send = user.mapMove(data_tmp[XCOORD])
+						to_send = usr.mapMove(data_tmp[XCOORD])
 						connection.sendall(to_send)
 
 
